@@ -42,50 +42,53 @@ class DefaultController extends AbstractController
                 );
             $orders = $response['body']['container']['orders'];
 
-
-
+        // ************************************************
+        // ETAPE 2 / fichier CSV
              // output headers so that the file is downloaded rather than displayed
-        // header('Content-type: text/csv');
-        // header('Content-Disposition: attachment; filename="demo.csv"');
-        
-        // // do not cache the file
-        // header('Pragma: no-cache');
-        // header('Expires: 0');
- 
-        // // create a file pointer connected to the output stream
-        // $file = fopen('php://output', 'w');
-        
-        // // send the column headers
-        // fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL', 'TOTAL', 'TTC'));
-        
-        // $data =[];
-        // $total_tax = 0;
-        // foreach($orders as $order){
-        //     $data[] = [
-        //         $order['id'],
-        //         $order['name'],
-        //         $order['created_at'],
-        //         $order['customer']['last_name'],
-        //         $order['email'],
-        //         $order['total_price'],
-        //         $order['total_price']+$order['total_tax']
-        //     ];
-        //     foreach($order['tax_lines'] as $tax){
-        //         // if($tax['title'] == 'FR TVA'){  
-        //             $total_tax += $tax['price'];
-        //         // }
-        //     }
-        // }
-        // $data[] = [];
-        // $data[] = [ 'TOTAL TAX', $total_tax];
+            header('Content-type: text/csv');
+            header('Content-Disposition: attachment; filename="demo.csv"');
+            
+            // do not cache the file
+            header('Pragma: no-cache');
+            header('Expires: 0');
+    
+            // create a file pointer connected to the output stream
+            $file = fopen('php://output', 'w');
+            
+            // send the column headers
+            fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL', 'TOTAL', 'TTC'));
+            
+            $data =[];
+            $total_tax = 0;
+            foreach($orders as $order){
+                $data[] = [
+                    $order['id'],
+                    $order['name'],
+                    $order['created_at'],
+                    $order['customer']['last_name'],
+                    $order['email'],
+                    $order['total_price'],
+                    $order['total_price']+$order['total_tax']
+                ];
+                foreach($order['tax_lines'] as $tax){
+                    // if($tax['title'] == 'FR TVA'){  
+                        $total_tax += $tax['price'];
+                    // }
+                }
+            }
 
-        // // output each row of the data
-        // foreach ($data as $row)
-        // {
-        //     fputcsv($file, $row);
-        // }
-        // exit();
-        
+            // ************************************************
+            // ETAPE 3 / fichier CSV
+            $data[] = [];
+            $data[] = [ 'TOTAL TAX', $total_tax];
+
+            // output each row of the data
+            foreach ($data as $row)
+            {
+                fputcsv($file, $row);
+            }
+            exit();
+            
 
 
         return $this->render('testUniq/welcometest.html.twig', [
