@@ -49,7 +49,7 @@ class DefaultController extends AbstractController
         $file = fopen('php://output', 'w');
         
         // send the column headers
-        fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL'));
+        fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL', 'TOTAL', 'TTC'));
         
         // Sample data. This can be fetched from mysql too
         // $data = array(
@@ -63,10 +63,13 @@ class DefaultController extends AbstractController
         foreach($orders as $order){
             $data[] = [
                 $order['id'],
-                '',
-                '',
-                '',
-                '',
+                $order['name'],
+                $order['created_at'],
+                $order['customer']['last_name'],
+                $order['email'],
+                $order['total_price'],
+                $order['total_price']+$order['total_tax']
+
             ];
         }
 
