@@ -32,52 +32,59 @@ class DefaultController extends AbstractController
         // ETAPE 1 : DONE !!!
         // ************************************************
 
-            $response = $api->rest('GET', '/admin/orders.json', ['limit' => 5]);
+            $response = $api->rest('GET', '/admin/orders.json', 
+                [
+                    'limit' => 5, 
+                    'created_at_max' => '2021-10-01T15%3A22%3A00-04%3A00',
+                    'created_at_min' => '2021-09-30T15%3A22%3A00-04%3A00',
+                    'status' => 'any'
+                ]
+                );
             $orders = $response['body']['container']['orders'];
 
 
 
              // output headers so that the file is downloaded rather than displayed
-        header('Content-type: text/csv');
-        header('Content-Disposition: attachment; filename="demo.csv"');
+        // header('Content-type: text/csv');
+        // header('Content-Disposition: attachment; filename="demo.csv"');
         
-        // do not cache the file
-        header('Pragma: no-cache');
-        header('Expires: 0');
+        // // do not cache the file
+        // header('Pragma: no-cache');
+        // header('Expires: 0');
  
-        // create a file pointer connected to the output stream
-        $file = fopen('php://output', 'w');
+        // // create a file pointer connected to the output stream
+        // $file = fopen('php://output', 'w');
         
-        // send the column headers
-        fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL', 'TOTAL', 'TTC'));
+        // // send the column headers
+        // fputcsv($file, array('ID', 'NAME', 'TIME', 'LASTNAME', 'EMAIL', 'TOTAL', 'TTC'));
         
-        $data =[];
-        $total_tax = 0;
-        foreach($orders as $order){
-            $data[] = [
-                $order['id'],
-                $order['name'],
-                $order['created_at'],
-                $order['customer']['last_name'],
-                $order['email'],
-                $order['total_price'],
-                $order['total_price']+$order['total_tax']
-            ];
-            foreach($order['tax_lines'] as $tax){
-                // if($tax['title'] == 'FR TVA'){  
-                    $total_tax += $tax['price'];
-                // }
-            }
-        }
-        $data[] = [];
-        $data[] = [ 'TOTAL TAX', $total_tax];
+        // $data =[];
+        // $total_tax = 0;
+        // foreach($orders as $order){
+        //     $data[] = [
+        //         $order['id'],
+        //         $order['name'],
+        //         $order['created_at'],
+        //         $order['customer']['last_name'],
+        //         $order['email'],
+        //         $order['total_price'],
+        //         $order['total_price']+$order['total_tax']
+        //     ];
+        //     foreach($order['tax_lines'] as $tax){
+        //         // if($tax['title'] == 'FR TVA'){  
+        //             $total_tax += $tax['price'];
+        //         // }
+        //     }
+        // }
+        // $data[] = [];
+        // $data[] = [ 'TOTAL TAX', $total_tax];
 
-        // output each row of the data
-        foreach ($data as $row)
-        {
-            fputcsv($file, $row);
-        }
-        exit();
+        // // output each row of the data
+        // foreach ($data as $row)
+        // {
+        //     fputcsv($file, $row);
+        // }
+        // exit();
         
 
 
